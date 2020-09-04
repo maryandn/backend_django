@@ -1,8 +1,8 @@
-from rest_framework.generics import CreateAPIView
-from .serializers import ProfileSerializer
-from .models import Profile
+from rest_framework.generics import ListCreateAPIView
+from .serializers import UserSerializer
+from .models import UserModel
 
 
-class ProfileView(CreateAPIView):
-    serializer_class = ProfileSerializer
-    queryset = Profile.objects.all()
+class UserView(ListCreateAPIView):
+    serializer_class = UserSerializer
+    queryset = UserModel.objects.all()
