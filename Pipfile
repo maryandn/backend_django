@@ -10,6 +10,7 @@ django = "*"
 mysql-connector = "*"
 mysqlclient = "*"
 djangorestframework = "*"
+djangorestframework-simplejwt = "*"
 
 [requires]
 python_version = "3.8"
