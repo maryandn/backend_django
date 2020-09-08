@@ -26,3 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class PermissionUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = ('is_superuser',)

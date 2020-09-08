@@ -1,10 +1,7 @@
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from rest_framework.mixins import ListModelMixin
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.authentication import SessionAuthentication
-from .serializers import UserSerializer
-from .models import UserModel
+from .serializers import UserSerializer, PermissionUserSerializer
 from rest_framework.response import Response
 
 
@@ -12,9 +9,9 @@ class SignInView(CreateAPIView, ListModelMixin):
     serializer_class = UserSerializer
 
 
-class UserView(APIView, ListModelMixin):
-    serializer_class = UserSerializer
+class PermissionUserView(APIView, ListModelMixin):
+    serializer_class = PermissionUserSerializer
 
-    def get(self, request):
-        user = UserSerializer(request.user).data
+    def get_authenticate_header(self, request):
+        user = PermissionUserSerializer(request.user).data
         return Response(user)
