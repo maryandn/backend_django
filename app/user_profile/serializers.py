@@ -29,4 +29,4 @@ class UserSerializer(serializers.ModelSerializer):
 class PermissionUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ('is_superuser',)
+        fields = '__all__'
