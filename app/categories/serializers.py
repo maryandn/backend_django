@@ -12,3 +12,4 @@ class SubProductCategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubProductCategoriesModels
         fields = '__all__'
+        extra_kwargs = {'categories': {'read_only': True}}
