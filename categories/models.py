@@ -5,7 +5,7 @@ class ProductCategoriesModels(models.Model):
     class Meta:
         db_table = 'product_categories'
 
-    name = models.CharField(max_length=40, unique=True, )
+    name = models.CharField(max_length=40, unique=True)
 
 
 class SubProductCategoriesModels(models.Model):
@@ -14,3 +14,6 @@ class SubProductCategoriesModels(models.Model):
 
     categories = models.ForeignKey(ProductCategoriesModels, on_delete=models.CASCADE, related_name='categories')
     name = models.CharField(max_length=40, unique=True)
+
+    def __str__(self):
+        return f'{self.id}.{self.name}'

@@ -9,12 +9,18 @@ class BrandModel(models.Model):
 
     name = models.CharField(max_length=20)
 
+    def __str__(self):
+        return f'{self.id}.{self.name}'
+
 
 class ColorModel(models.Model):
     class Meta:
         db_table = 'product_color'
 
     name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f'{self.id}.{self.name}'
 
 
 # class ImgModel(models.Model):
@@ -43,13 +49,16 @@ class ProductModel(models.Model):
     class Meta:
         db_table = 'product'
 
-    sub_category = models.OneToOneField(SubProductCategoriesModels, on_delete=models.SET_NULL, null=True)
+    sub_category = models.ForeignKey(SubProductCategoriesModels,
+                                     on_delete=models.SET_NULL,
+                                     null=True,
+                                     )
 
     name = models.CharField(max_length=20)
     code = models.IntegerField(unique=True)
     price = models.FloatField()
     quantity = models.IntegerField()
-    brand = models.OneToOneField(BrandModel, on_delete=models.SET_NULL, null=True)
-    color = models.ForeignKey(ColorModel, on_delete=models.SET_NULL, null=True)
-    title = models.OneToOneField(TitleModel, on_delete=models.SET_NULL, null=True)
+    brand = models.ForeignKey(BrandModel, unique=False, on_delete=models.SET_NULL, null=True)
+    color = models.ForeignKey(ColorModel, unique=False, on_delete=models.SET_NULL, null=True)
+    title = models.OneToOneField(TitleModel, unique=False, on_delete=models.SET_NULL, null=True)
     description = models.OneToOneField(DescriptionModel, on_delete=models.SET_NULL, null=True)
