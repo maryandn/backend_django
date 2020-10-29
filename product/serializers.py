@@ -1,15 +1,37 @@
 from rest_framework import serializers
 
-from .models import ProductModel
+from .models import ProductModel, BrandModel, ColorModel
+
+
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BrandModel
+        fields = ('id', 'name')
+
+
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColorModel
+        fields = ('id', 'name')
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    brand = BrandSerializer(read_only=True)
+    color = ColorSerializer(read_only=True)
+
     class Meta:
         model = ProductModel
-        fields = ('sub_category', 'name', 'code', 'price', 'quantity', 'brand', 'color')
+        fields = ('id', 'name', 'code', 'price', 'quantity', 'brand', 'color')
 
     def create(self, validated_data):
-        product = ProductModel(**validated_data)
-        product.save()
+        return ProductModel.objects.create(**validated_data)
 
-        return product
+
+class ProductChangeSerializer(serializers.ModelSerializer):
+    brand = BrandSerializer(read_only=True)
+    color = ColorSerializer(read_only=True)
+
+    class Meta:
+        model = ProductModel
+        fields = ('id', 'name', 'code', 'price', 'quantity', 'brand', 'color')
+        extra_kwargs = {"code": {"read_only": True}}

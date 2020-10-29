@@ -3,19 +3,46 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import ProductModel
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, ProductChangeSerializer
 
 
 class ProductView(APIView):
     serializer_class = ProductSerializer
 
-    def post(self, request):
-        serializer = ProductSerializer(data=request.data)
+    def post(self, *args, **kwargs):
+        pk = kwargs.get('pk')
+        data = self.request.data
+        serializer = ProductSerializer(data=data)
         if not serializer.is_valid():
             return Response(serializer.errors)
-        serializer.save()
-        return Response({"msg": "Product is add"})
+        color_id = data.get('color')
+        brand_id = data.get('brand')
+        serializer.save(sub_category_id=pk, color_id=color_id, brand_id=brand_id)
+        return Response(serializer.data)
 
-    def get(self, request):
-        product = ProductModel.objects.all()
+    def get(self, *args, **kwargs):
+        pk = kwargs.get('pk')
+        product = ProductModel.objects.filter(sub_category_id=pk)
         return Response(ProductSerializer(product, many=True).data)
+
+
+class ChangeProductView(APIView):
+    serializer_class = ProductSerializer
+
+    def put(self, *args, **kwargs):
+        pk = kwargs.get('pk')
+        data = self.request.data
+        product = ProductModel.objects.get(pk=pk)
+        serializer = ProductChangeSerializer(product, data=data)
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+        color_id = data.get('color')
+        brand_id = data.get('brand')
+        serializer.save(color_id=color_id, brand_id=brand_id)
+        return Response(serializer.data)
+
+    def delete(self, *args, **kwargs):
+        pk = kwargs.get('pk')
+        product = ProductModel.objects.get(pk=pk)
+        product.delete()
+        return Response({'msg': 'product deleted'})
