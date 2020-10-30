@@ -3,7 +3,18 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import ProductModel
-from .serializers import ProductSerializer, ProductChangeSerializer
+from .serializers import ProductSerializer, ProductChangeSerializer, ImgSerializer
+
+
+class ImgView(APIView):
+    serializer_class = ImgSerializer
+
+    def post(self, *args, **kwargs):
+        serializer = ImgSerializer(data=self.request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+        serializer.save()
+        return Response({"msg": "Img is add"})
 
 
 class ProductView(APIView):
@@ -15,9 +26,10 @@ class ProductView(APIView):
         serializer = ProductSerializer(data=data)
         if not serializer.is_valid():
             return Response(serializer.errors)
+        img_id = data.get('img')
         color_id = data.get('color')
         brand_id = data.get('brand')
-        serializer.save(sub_category_id=pk, color_id=color_id, brand_id=brand_id)
+        serializer.save(sub_category_id=pk, img_id=img_id, color_id=color_id, brand_id=brand_id)
         return Response(serializer.data)
 
     def get(self, *args, **kwargs):
@@ -36,9 +48,10 @@ class ChangeProductView(APIView):
         serializer = ProductChangeSerializer(product, data=data)
         if not serializer.is_valid():
             return Response(serializer.errors)
+        img_id = data.get('img')
         color_id = data.get('color')
         brand_id = data.get('brand')
-        serializer.save(color_id=color_id, brand_id=brand_id)
+        serializer.save(img_id=img_id, color_id=color_id, brand_id=brand_id)
         return Response(serializer.data)
 
     def delete(self, *args, **kwargs):
