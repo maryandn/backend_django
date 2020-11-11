@@ -1,8 +1,11 @@
 from django.urls import path
-from .views import ProductView, ChangeProductView, ImgView
+from .views import ProductView, ChangeProductView, ColorView, BrandView, EditBrandView, EditColorView
 
 urlpatterns = [
     path('<int:pk>', ProductView.as_view()),
     path('change_product/<int:pk>', ChangeProductView.as_view()),
-    path('add_img', ImgView.as_view())
+    path('color/', ColorView.as_view()),
+    path('brand/', BrandView.as_view()),
+    path('color/<int:pk>', EditColorView.as_view()),
+    path('brand/<int:pk>', EditBrandView.as_view())
 ]

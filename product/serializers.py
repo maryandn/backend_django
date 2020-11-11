@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import ProductModel, BrandModel, ColorModel, ImgModel
+from .models import ProductModel, BrandModel, ColorModel
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -15,16 +15,9 @@ class ColorSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class ImgSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ImgModel
-        fields = ('id', 'name')
-
-
 class ProductSerializer(serializers.ModelSerializer):
     brand = BrandSerializer(read_only=True)
     color = ColorSerializer(read_only=True)
-    img = ImgSerializer(read_only=True)
 
     class Meta:
         model = ProductModel
@@ -37,7 +30,6 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductChangeSerializer(serializers.ModelSerializer):
     brand = BrandSerializer(read_only=True)
     color = ColorSerializer(read_only=True)
-    img = ImgSerializer(read_only=True)
 
     class Meta:
         model = ProductModel

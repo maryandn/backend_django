@@ -2,19 +2,88 @@ from rest_framework.views import APIView
 
 from rest_framework.response import Response
 
-from .models import ProductModel
-from .serializers import ProductSerializer, ProductChangeSerializer, ImgSerializer
+from .models import ProductModel, ColorModel, BrandModel
+from .serializers import ProductSerializer, ProductChangeSerializer, ColorSerializer, BrandSerializer
 
 
-class ImgView(APIView):
-    serializer_class = ImgSerializer
+class ColorView(APIView):
+    serializer_class = ColorSerializer
 
-    def post(self, *args, **kwargs):
-        serializer = ImgSerializer(data=self.request.data)
+    def get(self, request):
+        color = ColorModel.objects.all()
+        return Response(ColorSerializer(color, many=True).data)
+
+    def post(self, request):
+        serializer = ColorSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors)
         serializer.save()
-        return Response({"msg": "Img is add"})
+        return Response({"msg": "Color is add"})
+
+
+class EditColorView(APIView):
+    serializer_class = ColorSerializer
+
+    def put(self, *args, **kwargs):
+        pk = kwargs.get('pk')
+        data = self.request.data
+        color = ColorModel.objects.filter(id=pk).first()
+        if not color:
+            return Response({'msg': 'Color not found'})
+        serializer = ColorSerializer(color, data=data)
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+        name = data.get('name')
+        serializer.save(name=name)
+        return Response(serializer.data)
+
+    def delete(self, *args, **kwargs):
+        pk = kwargs.get('pk')
+        color = ColorModel.objects.filter(id=pk).first()
+        if not color:
+            return Response({'msg': 'Color not found'})
+        color.delete()
+        return Response({'msg': 'Color delete'})
+
+
+class BrandView(APIView):
+    serializer_class = BrandSerializer
+
+    def get(self, request):
+        brand = BrandModel.objects.all()
+        return Response(BrandSerializer(brand, many=True).data)
+
+    def post(self, request):
+        serializer = BrandSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+        serializer.save()
+        return Response({"msg": "Brand is add"})
+
+
+class EditBrandView(APIView):
+    serializer_class = BrandSerializer
+
+    def put(self, *args, **kwargs):
+        pk = kwargs.get('pk')
+        data = self.request.data
+        brand = BrandModel.objects.filter(id=pk).first()
+        if not brand:
+            return Response({'msg': 'Brand not found'})
+        serializer = BrandSerializer(brand, data=data)
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+        name = data.get('name')
+        serializer.save(name=name)
+        return Response(serializer.data)
+
+    def delete(self, *args, **kwargs):
+        pk = kwargs.get('pk')
+        brand = BrandModel.objects.filter(id=pk).first()
+        if not brand:
+            return Response({'msg': 'Brand not found'})
+        brand.delete()
+        return Response({'msg': 'Brand delete'})
 
 
 class ProductView(APIView):
@@ -26,10 +95,9 @@ class ProductView(APIView):
         serializer = ProductSerializer(data=data)
         if not serializer.is_valid():
             return Response(serializer.errors)
-        img_id = data.get('img')
         color_id = data.get('color')
         brand_id = data.get('brand')
-        serializer.save(sub_category_id=pk, img_id=img_id, color_id=color_id, brand_id=brand_id)
+        serializer.save(sub_category_id=pk, color_id=color_id, brand_id=brand_id)
         return Response(serializer.data)
 
     def get(self, *args, **kwargs):
@@ -48,10 +116,9 @@ class ChangeProductView(APIView):
         serializer = ProductChangeSerializer(product, data=data)
         if not serializer.is_valid():
             return Response(serializer.errors)
-        img_id = data.get('img')
         color_id = data.get('color')
         brand_id = data.get('brand')
-        serializer.save(img_id=img_id, color_id=color_id, brand_id=brand_id)
+        serializer.save(color_id=color_id, brand_id=brand_id)
         return Response(serializer.data)
 
     def delete(self, *args, **kwargs):

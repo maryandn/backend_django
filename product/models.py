@@ -25,13 +25,6 @@ class ColorModel(models.Model):
         return f'{self.id}.{self.name}'
 
 
-class ImgModel(models.Model):
-    class Meta:
-        db_table = 'product_img'
-
-    name = models.ImageField(upload_to=os.path.join('product', 'img'))
-
-
 class TitleModel(models.Model):
     class Meta:
         db_table = 'product_title'
@@ -59,7 +52,7 @@ class ProductModel(models.Model):
     code = models.IntegerField(unique=True)
     price = models.FloatField()
     quantity = models.IntegerField()
-    img = models.ForeignKey(ImgModel, on_delete=models.SET_NULL, null=True)
+    img = models.ImageField(upload_to=os.path.join('product', 'img'))
     brand = models.ForeignKey(BrandModel, unique=False, on_delete=models.SET_NULL, null=True)
     color = models.ForeignKey(ColorModel, unique=False, on_delete=models.SET_NULL, null=True)
     title = models.OneToOneField(TitleModel, unique=False, on_delete=models.SET_NULL, null=True)
