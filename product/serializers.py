@@ -28,8 +28,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductChangeSerializer(serializers.ModelSerializer):
-    brand = BrandSerializer(read_only=True)
-    color = ColorSerializer(read_only=True)
 
     class Meta:
         model = ProductModel

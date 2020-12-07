@@ -113,12 +113,11 @@ class ChangeProductView(APIView):
         pk = kwargs.get('pk')
         data = self.request.data
         product = ProductModel.objects.get(pk=pk)
-        serializer = ProductChangeSerializer(product, data=data)
-        if not serializer.is_valid():
-            return Response(serializer.errors)
-        color_id = data.get('color')
-        brand_id = data.get('brand')
-        serializer.save(color_id=color_id, brand_id=brand_id)
+        serializer = ProductChangeSerializer(product, data=data, partial=True)
+        # if not serializer.is_valid():
+        #     return Response(serializer.errors)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
 
     def delete(self, *args, **kwargs):
@@ -126,3 +125,12 @@ class ChangeProductView(APIView):
         product = ProductModel.objects.get(pk=pk)
         product.delete()
         return Response({'msg': 'product deleted'})
+
+
+class GetProductView(APIView):
+    serializer_class = ProductSerializer
+
+    def get(self, *args, **kwargs):
+        pk = kwargs.get('pk')
+        product = ProductModel.objects.filter(id=pk)
+        return Response(ProductSerializer(product, many=True).data)
