@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'user_profile',
     'corsheaders',
     'categories',
-    'product'
+    'product',
+    'order'
 ]
 
 MIDDLEWARE = [
