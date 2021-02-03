@@ -114,8 +114,6 @@ class ChangeProductView(APIView):
         data = self.request.data
         product = ProductModel.objects.get(pk=pk)
         serializer = ProductChangeSerializer(product, data=data, partial=True)
-        # if not serializer.is_valid():
-        #     return Response(serializer.errors)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

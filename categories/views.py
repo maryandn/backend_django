@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.views import APIView
 
 from .models import ProductCategoriesModels, SubProductCategoriesModels
@@ -7,6 +8,12 @@ from rest_framework.response import Response
 
 class CategoriesView(APIView):
     serializer_class = ProductCategoriesSerializer
+    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAdminUser()]
+        return super().get_permissions()
 
     def get(self, request):
         category = ProductCategoriesModels.objects.all()
@@ -22,6 +29,12 @@ class CategoriesView(APIView):
 
 class EditCategoriesView(APIView):
     serializer_class = ProductCategoriesSerializer
+    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        if self.request.method == 'PUT' or self.request.method == 'DELETE':
+            return [IsAdminUser()]
+        return super().get_permissions()
 
     def put(self, *args, **kwargs):
         pk = kwargs.get('pk')
