@@ -16,6 +16,8 @@ class CategoriesView(APIView):
         return super().get_permissions()
 
     def get(self, request):
+        print(request.user)
+        print(request.method)
         category = ProductCategoriesModels.objects.all()
         return Response(ProductCategoriesSerializer(category, many=True).data)
 
