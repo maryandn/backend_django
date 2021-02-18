@@ -62,6 +62,12 @@ class EditCategoriesView(APIView):
 
 class SubCategoriesView(APIView):
     serializer_class = SubProductCategoriesSerializer
+    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAdminUser()]
+        return super().get_permissions()
 
     def get(self, *args, **kwargs):
         pk = kwargs.get('pk')
@@ -79,6 +85,7 @@ class SubCategoriesView(APIView):
 
 class EditSubCategoriesView(APIView):
     serializer_class = SubProductCategoriesSerializer
+    permission_classes = [IsAdminUser()]
 
     def put(self, *args, **kwargs):
         pk = kwargs.get('pk')

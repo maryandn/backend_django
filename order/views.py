@@ -41,8 +41,9 @@ class EditCartView(APIView):
         return Response({'msg': 'product deleted'}, status.HTTP_200_OK)
 
     def put(self, *args, **kwargs):
+        id = self.request.user.id
         product_id = kwargs.get('pk')
-        product = CartModel.objects.filter(id_product=product_id).first()
+        product = CartModel.objects.filter(id_product=product_id, id_user=id).first()
         if not product:
             return Response({'msg': 'product not found'})
         serializer = CartSerializer(product, data=self.request.data, partial=True)

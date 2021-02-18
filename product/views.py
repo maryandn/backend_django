@@ -1,24 +1,30 @@
 from rest_framework.views import APIView
-
+from rest_framework import status
 from rest_framework.response import Response
-
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from .models import ProductModel, ColorModel, BrandModel
 from .serializers import ProductSerializer, ProductChangeSerializer, ColorSerializer, BrandSerializer
 
 
 class ColorView(APIView):
     serializer_class = ColorSerializer
+    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAdminUser()]
+        return super().get_permissions()
 
     def get(self, request):
         color = ColorModel.objects.all()
-        return Response(ColorSerializer(color, many=True).data)
+        return Response(ColorSerializer(color, many=True).data, status.HTTP_200_OK)
 
     def post(self, request):
         serializer = ColorSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors)
         serializer.save()
-        return Response({"msg": "Color is add"})
+        return Response({"msg": "Color is add"}, status.HTTP_201_CREATED)
 
 
 class EditColorView(APIView):
@@ -48,17 +54,23 @@ class EditColorView(APIView):
 
 class BrandView(APIView):
     serializer_class = BrandSerializer
+    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAdminUser()]
+        return super().get_permissions()
 
     def get(self, request):
         brand = BrandModel.objects.all()
-        return Response(BrandSerializer(brand, many=True).data)
+        return Response(BrandSerializer(brand, many=True).data, status.HTTP_200_OK)
 
     def post(self, request):
         serializer = BrandSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors)
         serializer.save()
-        return Response({"msg": "Brand is add"})
+        return Response({"msg": "Brand is add"}, status.HTTP_201_CREATED)
 
 
 class EditBrandView(APIView):
@@ -88,22 +100,30 @@ class EditBrandView(APIView):
 
 class ProductView(APIView):
     serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAdminUser()]
+        return super().get_permissions()
 
     def post(self, *args, **kwargs):
+        print('***********', self.request.user)
         pk = kwargs.get('pk')
         data = self.request.data
+        print('&&&&&&&&&&&', data)
         serializer = ProductSerializer(data=data)
         if not serializer.is_valid():
             return Response(serializer.errors)
         color_id = data.get('color')
         brand_id = data.get('brand')
         serializer.save(sub_category_id=pk, color_id=color_id, brand_id=brand_id)
-        return Response(serializer.data)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
     def get(self, *args, **kwargs):
         pk = kwargs.get('pk')
         product = ProductModel.objects.filter(sub_category_id=pk)
-        return Response(ProductSerializer(product, many=True).data)
+        return Response(ProductSerializer(product, many=True).data, status.HTTP_200_OK)
 
 
 class ChangeProductView(APIView):
@@ -131,4 +151,4 @@ class GetProductView(APIView):
     def get(self, *args, **kwargs):
         pk = kwargs.get('pk')
         product = ProductModel.objects.filter(id=pk)
-        return Response(ProductSerializer(product, many=True).data)
+        return Response(ProductSerializer(product, many=True).data, status.HTTP_200_OK)

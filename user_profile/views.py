@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .serializers import UserSerializer, PermissionUserSerializer
 from rest_framework.response import Response
+from rest_framework import status
 
 
 class SignUpView(CreateAPIView):
@@ -15,5 +16,6 @@ class PermissionUserView(APIView):
 
     def get(self, request):
         user = request.user
+        print(user)
         data = UserSerializer(user).data
-        return Response(data)
+        return Response(data, status=status.HTTP_200_OK)
